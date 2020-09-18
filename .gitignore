@@ -1,5 +1,10 @@
 HELP.md
-target/
+src/test/
+test/
+entity.zip
+mvnw
+mvnw.cmd
+.mvn/
 !.mvn/wrapper/maven-wrapper.jar
 !**/src/main/**/target/
 !**/src/test/**/target/
