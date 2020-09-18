@@ -1,0 +1,14 @@
+#set ( $sys = ${system} )
+#set ( $dp = ${dynamicPath} )
+#set ( $tpl = ${template} )
+#set ( $package = ${sys.config.get("generator.package")} )
+#set ( $className = ${dp.className} )
+package ${package}.controller.v1;
+
+import ${package}.entity.${className};
+import org.springframework.web.bind.annotation.RestController;
+
+@RestController
+public class ${className}Controller implements ${className}ControllerApi {
+
+}
