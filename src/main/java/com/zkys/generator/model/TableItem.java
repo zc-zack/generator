@@ -34,6 +34,9 @@ public class TableItem {
         this.dynamicPathVariables = dynamicPathVariables;
     }
 
+    public TableItem() {
+    }
+
     public static class Builder {
 
         private TableItem item = new TableItem();

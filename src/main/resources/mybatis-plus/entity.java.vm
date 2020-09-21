@@ -15,7 +15,7 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 
 #if(${entityLombokModel})
-	@Data
+@Data
 	#if(${supperEntityClass})
 @EqualsAndHashCode(callSuper = true)
 	#else
@@ -35,14 +35,44 @@ public class ${entity} extends ${superEntityClass} implements Serializable {
 public class ${entity} implements Serializable {
 #end
 
-
-#foreach (${column} in ${table.columns})
-#if (${column.attributeName} == "id")
+#foreach(${column} in ${table.columnList})
+	#set($flag = true)
+	#foreach($filed in ${strategy.superEntityColumns})
+		#if(${column.attrbuteName} == $filed)
+			$flag = false
+			#break
+		#end
+		#if($flag)
+			#if(${swagger2})
+	@ApiModelProperty(value = "${column.comment}")
+			#else
+	/**
+	 * ${column.comment}
+	 */
+			#end
+		#else
+			#if("id" == ${column.attributeName})
 	@TableId(type = IdType.AUTO)
-#elseif(${column.attributeName} == "delFlag")
+			#elseif("delFlag" == ${column.attributeName})
 	@TableLogic
-#end
+			#end
 	private ${column.attributeType} ${column.attributeName};
+		#end
+	#end
 #end
 
+#if(${entityLombokModel})
+	#foreach (${column} in ${table.columns})
+	public void set${column.uppercaseAttributeName}(${column.attributeType} ${column.attributeName}) {
+			this.${column.attributeName} = ${column.attributeName};
+			}
+	public ${column.attributeType} get${column.uppercaseAttributeName}() {
+			return ${column.attributeName};
+			}
+	#end
+#end
+	@Override
+	public String toString() {
+			return JSON.toJSONString(this);
+	}
 }
