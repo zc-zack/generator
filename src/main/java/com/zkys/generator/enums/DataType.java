@@ -1,17 +1,14 @@
 package com.zkys.generator.enums;
 
-import lombok.Data;
-
 /**
  * com.zkys.generator.enums
  *
  * @author zhangc
  * @version 1.0
- * @create 2020/9/10 15:45
+ * @create 2020/10/9 10:34
  */
-public enum  DataTypeEnum {
-
-    CHAR("char", "String"),
+public enum DataType {
+    CHAR("char","String"),
     VARCHAR("varchar","String"),
     BLOB("blob","byte[]"),
     TEXT("text","String"),
@@ -30,30 +27,11 @@ public enum  DataTypeEnum {
     INT("int","Integer"),
     TIMESTAMP("timestamp","java.util.Date");
 
-
-    private final String mysqlDataType;
-
+    private final String mySqlDataType;
     private final String javaDataType;
 
-    DataTypeEnum(String mysqlDataType, String javaDataType) {
-        this.mysqlDataType = mysqlDataType;
+    DataType(String mySqlDataType, String javaDataType) {
+        this.mySqlDataType = mySqlDataType;
         this.javaDataType = javaDataType;
     }
-    public String getMysqlDataType() {
-        return mysqlDataType;
-    }
-
-    public String getJavaDataType() {
-        return javaDataType;
-    }
-
-    public static String getJavaDataType(String mysqlDataType) {
-        for (DataTypeEnum e: DataTypeEnum.values()) {
-            if (e.getMysqlDataType().equals(mysqlDataType)) {
-                return e.getJavaDataType();
-            }
-        }
-        return "";
-    }
-
 }

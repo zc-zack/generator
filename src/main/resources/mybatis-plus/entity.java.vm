@@ -65,10 +65,10 @@ public class ${entity} implements Serializable {
 	#foreach (${column} in ${table.columns})
 	public void set${column.uppercaseAttributeName}(${column.attributeType} ${column.attributeName}) {
 			this.${column.attributeName} = ${column.attributeName};
-			}
+	}
 	public ${column.attributeType} get${column.uppercaseAttributeName}() {
 			return ${column.attributeName};
-			}
+	}
 	#end
 #end
 	@Override
