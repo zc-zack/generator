@@ -38,6 +38,8 @@ public class Main {
         packageConfig.setController("controller.v1");
         packageConfig.setControllerApi("controller.api");
         packageConfig.setMapper("mappers");
+        packageConfig.setService("service");
+        packageConfig.setServiceImpl("service.impl");
         mysqlGenerator.setPackageConfig(packageConfig);
 
 //        String templatePath = "/templates/mapper.xml.vm";
