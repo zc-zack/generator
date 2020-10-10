@@ -49,7 +49,8 @@ public class Table {
     public void setTableName(String tableName) {
         this.tableName = tableName;
         if (null != this.tableName) {
-            this.className = WordUtils.capitalize(tableName.toLowerCase(), new char[]{'_'});
+            this.className = WordUtils.capitalize(tableName.toLowerCase(), new char[]{'_'})
+                    .replace("_", "");
             this.lowercaseClassName = StringUtils.uncapitalize(this.className);
         }
     }

@@ -14,8 +14,8 @@ generator:
     base-path: mybatis-plus
     output-paths: |
       Entity.java.vm: src/main/java/{packagePath}/model/pojos/{className}info.java
-      Mapper.java.vm: src/main/java/{packagePath}/mappers/{className}Mapper.java
-      Service.java.vm: src/main/java/{packagePath}/service/{className}Service.java
-      ServiceImpl.java.vm: src/main/java/{packagePath}/service/impl/{className}ServiceImpl.java
-      Controller.java.vm: src/main/java/{packagePath}/controller/v1/{className}Contoller.java
-      ControllerApi.java.vm: src/main/java/{packagePath}/controller/api/{className}ContollerApi.java
+#      Mapper.java.vm: src/main/java/{packagePath}/mappers/{className}Mapper.java
+#      Service.java.vm: src/main/java/{packagePath}/service/{className}Service.java
+#      ServiceImpl.java.vm: src/main/java/{packagePath}/service/impl/{className}ServiceImpl.java
+#      Controller.java.vm: src/main/java/{packagePath}/controller/v1/{className}Contoller.java
+#      ControllerApi.java.vm: src/main/java/{packagePath}/controller/api/{className}ContollerApi.java

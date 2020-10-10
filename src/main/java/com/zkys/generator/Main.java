@@ -37,7 +37,7 @@ public class Main {
         packageConfig.setModuleName("generator");
         mysqlGenerator.setPackageConfig(packageConfig);
 
-        String templatePath = "/templates/mapper.xml.vm";
+//        String templatePath = "/templates/mapper.xml.vm";
 
         MysqlStrategyConfig strategyConfig = new MysqlStrategyConfig();
         strategyConfig.setSuperEntityClass(BaseModel.class);

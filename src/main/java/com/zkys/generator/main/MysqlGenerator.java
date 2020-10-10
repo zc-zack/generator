@@ -4,20 +4,28 @@ import com.baomidou.mybatisplus.generator.config.DataSourceConfig;
 import com.baomidou.mybatisplus.generator.config.GlobalConfig;
 import com.baomidou.mybatisplus.generator.config.PackageConfig;
 import com.zkys.generator.common.model.StaticValue;
+import com.zkys.generator.common.utils.YmlUtil;
 import com.zkys.generator.config.MysqlStrategyConfig;
+import com.zkys.generator.context.TemplateContext;
 import com.zkys.generator.enums.DataTypeEnum;
 import com.zkys.generator.model.entity.Column;
 import com.zkys.generator.model.entity.Table;
 import lombok.Data;
 import lombok.extern.log4j.Log4j2;
+import org.apache.velocity.Template;
+import org.apache.velocity.VelocityContext;
+import org.apache.velocity.app.Velocity;
 
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.StringWriter;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Objects;
+import java.util.*;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipOutputStream;
 
 /**
  * com.zkys.generator.main
@@ -29,6 +37,12 @@ import java.util.Objects;
 @Log4j2
 @Data
 public class MysqlGenerator {
+
+    static {
+        Properties prop = new Properties();
+        prop.put("file.resource.loader.class", "org.apache.velocity.runtime.resource.loader.ClasspathResourceLoader");
+        Velocity.init(prop);
+    }
 
     private PackageConfig packageConfig;
 
@@ -43,6 +57,9 @@ public class MysqlGenerator {
     private Connection connection;
 
 
+    /**
+     * 执行代码代码生成
+     */
     public void execute() {
         try {
             Class.forName(dataSourceConfig.getDriverName());
@@ -55,8 +72,12 @@ public class MysqlGenerator {
             return;
         }
         initTableList();
+        generateZip(tableList, "./entity.zip");
     }
 
+    /**
+     * 获取表
+     */
     private void initTableList() {
         ResultSet resultSet = null;
         try {
@@ -81,10 +102,10 @@ public class MysqlGenerator {
     }
 
     private List<Column> getColumnList(String tableName) {
-        ResultSet resultSet = null;
+        ResultSet resultSet;
         List<Column> columnList = new ArrayList<>();
         try {
-            connection.getMetaData().getColumns(
+            resultSet = connection.getMetaData().getColumns(
                     connection.getCatalog(),
                     connection.getSchema(),
                     tableName,
@@ -121,6 +142,11 @@ public class MysqlGenerator {
         return columnList;
     }
 
+    /**
+     * sql 数据转 java数据类型
+     * @param column
+     * @return
+     */
     private String analysisDataType(Column column) {
         if (null == column || null == column.getDataType()) {
             return Object.class.getSimpleName();
@@ -128,7 +154,109 @@ public class MysqlGenerator {
         return DataTypeEnum.getJavaDataTypeByMysqlDataType(column.getDataType());
     }
 
+    /**
+     * 生成文件
+     *
+     * @param tableList
+     * @param path
+     */
+    private void generateZip(List<Table> tableList, String path) {
+        try (FileOutputStream fos = new FileOutputStream(path)) {
+            try (ZipOutputStream zos = new ZipOutputStream(fos)) {
+                for (Table table : tableList) {
+                    TemplateContext context = new TemplateContext();
+                    context.buildTable(table)
+                            .buildPackage(packageConfig)
+                            .buildGlobal(globalConfig)
+                            .buildStrategy(strategyConfig)
+                            .buildDynamicVariables(table);
+                    generatorCode(context, zos);
+                }
+            }
+        } catch (Exception e) {
+            log.error("创建文件失败");
+            e.printStackTrace();
+        }
+    }
 
+    /**
+     * 生成代码
+     * @param templateContext
+     * @param zos
+     */
+    private void generatorCode(TemplateContext templateContext, ZipOutputStream zos) {
+        VelocityContext velocityContext = new VelocityContext(templateContext.getMap());
+        Map<String, String> outputPathMap = parseTemplateOutputPaths(templateContext.getDynamicPathVariables());
+        for (Map.Entry<String, String> entry: outputPathMap.entrySet()) {
+            Template template = Velocity.getTemplate(entry.getKey(), "UTF-8");
+            try (StringWriter writer = new StringWriter()){
+                template.merge(velocityContext, writer);
+                zos.putNextEntry(new ZipEntry(entry.getValue()));
+                zos.closeEntry();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
 
+    }
+
+    /**
+     * 解析路径
+     * @param dynamicVariables
+     * @return
+     */
+    private Map<String, String> parseTemplateOutputPaths(Map<String, String> dynamicVariables) {
+        String pathString = YmlUtil.getString("generator.template.output-paths");
+        String templateBasePath = YmlUtil.getString("generator.template.base-path");
+        Map<String, String> outputPathMap = new HashMap<>();
+        if (null == pathString) {
+            return null;
+        }
+        String[] paths = pathString.split("\n");
+        for (String path : paths) {
+            int index = path.indexOf(":");
+            if (index == -1) {
+                continue;
+            }
+            String fileName = path.substring(0, index).trim();
+            try {
+                String outputPath = replace(path.substring(index + 1).trim(), dynamicVariables);
+                outputPathMap.put(templateBasePath + "/" + fileName, outputPath);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+        return outputPathMap;
+    }
+
+    private String replace(String pattern, Map<String, String> context) throws Exception {
+        char[] patternChars = pattern.toCharArray();
+        StringBuffer valueBuffer = new StringBuffer();
+        StringBuffer variableNameBuffer = null;
+        boolean inVariable = false;
+        for (int i = 0; i < patternChars.length; i++) {
+            if (!inVariable && '{' == patternChars[i]) {
+                inVariable = true;
+                variableNameBuffer = new StringBuffer();
+                continue;
+            }
+            if (inVariable && '}' == patternChars[i]) {
+                inVariable = false;
+                String variable = context.get(variableNameBuffer.toString());
+                valueBuffer.append(variable == null ? "null" : variable);
+                variableNameBuffer = null;
+                continue;
+            }
+            if ('\\' == patternChars[i] && ++i == patternChars.length) {
+                throw new Exception("转义符 '\\' 后缺少字符");
+            }
+            StringBuffer activeBuffer = inVariable ? variableNameBuffer : valueBuffer;
+            activeBuffer.append(patternChars[i]);
+        }
+        if (variableNameBuffer != null) {
+            throw new Exception("结尾缺少 '}' ");
+        }
+        return valueBuffer.toString();
+    }
 
 }
