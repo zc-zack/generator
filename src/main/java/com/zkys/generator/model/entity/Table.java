@@ -29,7 +29,7 @@ public class Table {
     /**
      * 表备注
      */
-    private String tableMark;
+    private String comment;
 
     /**
      * 所有列

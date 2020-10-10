@@ -12,6 +12,7 @@ import com.zkys.generator.model.entity.Column;
 import com.zkys.generator.model.entity.Table;
 import lombok.Data;
 import lombok.extern.log4j.Log4j2;
+import org.apache.commons.io.IOUtils;
 import org.apache.velocity.Template;
 import org.apache.velocity.VelocityContext;
 import org.apache.velocity.app.Velocity;
@@ -93,7 +94,7 @@ public class MysqlGenerator {
                 table.setTableName(tableName);
                 table.setColumnList(getColumnList(tableName));
                 table.setTableType(resultSet.getString("TABLE_TYPE"));
-                table.setTableMark(resultSet.getString("REMARKS"));
+                table.setComment(resultSet.getString("REMARKS"));
                 tableList.add(table);
             }
         } catch (SQLException e) {
@@ -121,7 +122,7 @@ public class MysqlGenerator {
                 column.setDataType(resultSet.getString("TYPE_NAME"));
                 column.setColumnSize(resultSet.getInt("COLUMN_SIZE"));
                 column.setDecimalDigits(resultSet.getInt("DECIMAL_DIGITS"));
-                column.setColumnMark(resultSet.getString("REMARKS"));
+                column.setComment(resultSet.getString("REMARKS"));
 
                 String nullAble = resultSet.getString("IS_NULLABLE");
                 if (nullAble != null) {
@@ -151,7 +152,7 @@ public class MysqlGenerator {
         if (null == column || null == column.getDataType()) {
             return Object.class.getSimpleName();
         }
-        return DataTypeEnum.getJavaDataTypeByMysqlDataType(column.getDataType());
+        return DataTypeEnum.getJavaDataTypeByMysqlDataType(column.getDataType().toLowerCase());
     }
 
     /**
@@ -185,6 +186,7 @@ public class MysqlGenerator {
      * @param zos
      */
     private void generatorCode(TemplateContext templateContext, ZipOutputStream zos) {
+        System.out.println(templateContext.getMap());
         VelocityContext velocityContext = new VelocityContext(templateContext.getMap());
         Map<String, String> outputPathMap = parseTemplateOutputPaths(templateContext.getDynamicPathVariables());
         for (Map.Entry<String, String> entry: outputPathMap.entrySet()) {
@@ -192,6 +194,7 @@ public class MysqlGenerator {
             try (StringWriter writer = new StringWriter()){
                 template.merge(velocityContext, writer);
                 zos.putNextEntry(new ZipEntry(entry.getValue()));
+                IOUtils.write(writer.toString(), zos, "UTF-8");
                 zos.closeEntry();
             } catch (IOException e) {
                 e.printStackTrace();

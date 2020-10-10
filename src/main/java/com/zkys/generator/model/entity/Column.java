@@ -32,7 +32,7 @@ public class Column {
     /**
      * 备注
      */
-    private String columnMark;
+    private String comment;
 
     /**
      * 列大小

@@ -8,6 +8,8 @@ import com.zkys.generator.config.MysqlStrategyConfig;
 import com.zkys.generator.main.MysqlGenerator;
 import sun.security.mscapi.CPublicKey;
 
+import java.util.Arrays;
+
 /**
  * com.zkys.generator
  *
