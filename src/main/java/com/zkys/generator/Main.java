@@ -2,13 +2,10 @@ package com.zkys.generator;
 
 import com.baomidou.mybatisplus.generator.config.DataSourceConfig;
 import com.baomidou.mybatisplus.generator.config.GlobalConfig;
-import com.baomidou.mybatisplus.generator.config.PackageConfig;
 import com.zkys.generator.common.model.BaseModel;
 import com.zkys.generator.config.MysqlStrategyConfig;
+import com.zkys.generator.config.PackageConfig;
 import com.zkys.generator.main.MysqlGenerator;
-import sun.security.mscapi.CPublicKey;
-
-import java.util.Arrays;
 
 /**
  * com.zkys.generator
@@ -37,6 +34,9 @@ public class Main {
         PackageConfig packageConfig = new PackageConfig();
         packageConfig.setParent("com.zkys");
         packageConfig.setModuleName("generator");
+        packageConfig.setEntity("model.pojos");
+        packageConfig.setController("controller.v1");
+        packageConfig.setControllerApi("controller.api");
         mysqlGenerator.setPackageConfig(packageConfig);
 
 //        String templatePath = "/templates/mapper.xml.vm";
@@ -45,6 +45,7 @@ public class Main {
         strategyConfig.setSuperEntityClass(BaseModel.class);
         strategyConfig.setEntityLombokModel(true);
         strategyConfig.setRestControllerStyle(true);
+        strategyConfig.setControllerImpl(true);
         mysqlGenerator.setStrategyConfig(strategyConfig);
 
         mysqlGenerator.execute();

@@ -1,0 +1,23 @@
+package ${package.controller}
+
+#if(${controllerImpl})
+import ${package.controller}.${className}ControllerApi
+#end
+#if(${restController})
+import org.springframework.web.bind.annotation.RestController;
+#end
+/**
+ * ${package.controllerApi}
+ * @author ${author}
+ * @version 1.0
+ * @create ${date}
+ */
+#if(${restController})
+@RestController
+#end
+#if(${controllerImpl})
+public class ${className}Controller implements ${className}ControllerApi {
+#else
+public class ${className}Controller {
+#end
+}

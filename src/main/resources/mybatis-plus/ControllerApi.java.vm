@@ -1,0 +1,11 @@
+package ${package.controllerApi};
+
+/**
+ * ${package.controllerApi}
+ * @author ${author}
+ * @version 1.0
+ * @create ${date}
+ */
+public interface  ${className}ControllerApi {
+
+}

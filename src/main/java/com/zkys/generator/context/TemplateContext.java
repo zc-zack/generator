@@ -2,9 +2,9 @@ package com.zkys.generator.context;
 
 import com.baomidou.mybatisplus.core.toolkit.StringPool;
 import com.baomidou.mybatisplus.generator.config.GlobalConfig;
-import com.baomidou.mybatisplus.generator.config.PackageConfig;
 import com.zkys.generator.common.model.KeyConstant;
 import com.zkys.generator.config.MysqlStrategyConfig;
+import com.zkys.generator.config.PackageConfig;
 import com.zkys.generator.model.entity.Table;
 import lombok.Data;
 import org.apache.commons.lang.StringUtils;
@@ -30,17 +30,19 @@ public class TemplateContext {
     public TemplateContext buildTable(Table table) {
         map.put("table", table);
         map.put("entity", table.getClassName());
+        map.put("className", table.getClassName());
         return this;
     }
 
     public TemplateContext buildGlobal(GlobalConfig config) {
         map.put("author", config.getAuthor());
         map.put("swagger2", config.isSwagger2());
+        map.put("date", new Date());
         return this;
     }
 
     public TemplateContext buildPackage(PackageConfig config) {
-        map.put("package", config.getParent());
+        map.put("package", config);
         return this;
     }
 
@@ -49,13 +51,15 @@ public class TemplateContext {
         System.out.println(Arrays.toString(config.getSuperEntityColumns()));
         map.put("superEntityClass", getSuperEntityClass(config.getSuperEntityClass()));
         map.put("entityLombokModel", config.isEntityLombokModel());
-        map.put("RestController", config.isRestControllerStyle());
+        map.put("restController", config.isRestControllerStyle());
         map.put("importPackages", importPackages);
+        map.put("controllerImpl", config.isControllerImpl());
         return this;
     }
 
     public TemplateContext buildDynamicVariables(Table table) {
-        dynamicPathVariables.put(KeyConstant.PACKAGE_PATH, String.valueOf(map.get("package")).replace(".", "/"));
+        PackageConfig packageConfig = (PackageConfig) map.get("package");
+        dynamicPathVariables.put(KeyConstant.PACKAGE_PATH, packageConfig.getParent().replace(".", "/"));
         dynamicPathVariables.put(KeyConstant.CLASS_NAME, table.getClassName());
         dynamicPathVariables.put(KeyConstant.LOWERCASE_CLASS_NAME, table.getLowercaseClassName());
         return this;

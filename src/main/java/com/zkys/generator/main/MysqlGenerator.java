@@ -2,10 +2,10 @@ package com.zkys.generator.main;
 
 import com.baomidou.mybatisplus.generator.config.DataSourceConfig;
 import com.baomidou.mybatisplus.generator.config.GlobalConfig;
-import com.baomidou.mybatisplus.generator.config.PackageConfig;
 import com.zkys.generator.common.model.StaticValue;
 import com.zkys.generator.common.utils.YmlUtil;
 import com.zkys.generator.config.MysqlStrategyConfig;
+import com.zkys.generator.config.PackageConfig;
 import com.zkys.generator.context.TemplateContext;
 import com.zkys.generator.enums.DataTypeEnum;
 import com.zkys.generator.model.entity.Column;
