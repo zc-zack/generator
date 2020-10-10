@@ -37,6 +37,7 @@ public class Main {
         packageConfig.setEntity("model.pojos");
         packageConfig.setController("controller.v1");
         packageConfig.setControllerApi("controller.api");
+        packageConfig.setMapper("mappers");
         mysqlGenerator.setPackageConfig(packageConfig);
 
 //        String templatePath = "/templates/mapper.xml.vm";

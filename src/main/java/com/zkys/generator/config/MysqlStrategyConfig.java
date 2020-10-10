@@ -14,4 +14,6 @@ import lombok.Data;
 public class MysqlStrategyConfig extends StrategyConfig {
 
     private boolean controllerImpl = false;
+
+    private boolean mapper = false;
 }

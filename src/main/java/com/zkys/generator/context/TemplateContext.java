@@ -54,6 +54,7 @@ public class TemplateContext {
         map.put("restController", config.isRestControllerStyle());
         map.put("importPackages", importPackages);
         map.put("controllerImpl", config.isControllerImpl());
+        map.put("mapper", config.isMapper());
         return this;
     }
 
