@@ -46,6 +46,12 @@ public class Table {
      */
     private String lowercaseClassName;
 
+    /**
+     * 公共字段
+     */
+    private List<Column> commonColumnList;
+
+
     public void setTableName(String tableName) {
         this.tableName = tableName;
         if (null != this.tableName) {

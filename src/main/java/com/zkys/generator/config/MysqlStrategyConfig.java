@@ -16,4 +16,6 @@ public class MysqlStrategyConfig extends StrategyConfig {
     private boolean controllerImpl = false;
 
     private boolean mapper = false;
+
+    private boolean baseResultMap = true;
 }

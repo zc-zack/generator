@@ -5,9 +5,11 @@ import com.baomidou.mybatisplus.generator.config.GlobalConfig;
 import com.zkys.generator.common.model.KeyConstant;
 import com.zkys.generator.config.MysqlStrategyConfig;
 import com.zkys.generator.config.PackageConfig;
+import com.zkys.generator.model.entity.Column;
 import com.zkys.generator.model.entity.Table;
 import lombok.Data;
 import org.apache.commons.lang.StringUtils;
+import org.springframework.beans.BeanUtils;
 
 import java.util.*;
 
@@ -55,6 +57,9 @@ public class TemplateContext {
         map.put("importPackages", importPackages);
         map.put("controllerImpl", config.isControllerImpl());
         map.put("mapper", config.isMapper());
+        map.put("baseResultMap", config.isBaseResultMap());
+        Table table = filterColumn((Table) map.get("table"), config.getSuperEntityColumns());
+        map.put("table", table);
         return this;
     }
 
@@ -78,6 +83,23 @@ public class TemplateContext {
         importPackages.add(path);
     }
 
+
+    private Table filterColumn(Table table, String[] supperColumns) {
+        List<Column> commonList = new ArrayList<>();
+        for (String supperColumn : supperColumns) {
+            for (Column column : table.getColumnList()) {
+                if (column.getAttributeName().equals(supperColumn)) {
+                    table.getColumnList().remove(column);
+                    Column common = new Column();
+                    BeanUtils.copyProperties(column, common);
+                    commonList.add(common);
+                    break;
+                }
+            }
+        }
+        table.setCommonColumnList(commonList);
+        return table;
+    }
 
 
 

@@ -119,6 +119,11 @@ public class MysqlGenerator {
                 column.setTableName(tableName);
 
                 column.setColumnName(resultSet.getString("COLUMN_NAME"));
+                if ("id".equals(column.getAttributeName().toLowerCase())) {
+                    column.setKeyFlag(Boolean.TRUE);
+                } else {
+                    column.setKeyFlag(Boolean.FALSE);
+                }
                 column.setDataType(resultSet.getString("TYPE_NAME"));
                 column.setColumnSize(resultSet.getInt("COLUMN_SIZE"));
                 column.setDecimalDigits(resultSet.getInt("DECIMAL_DIGITS"));

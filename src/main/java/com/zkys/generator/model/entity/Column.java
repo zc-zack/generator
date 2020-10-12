@@ -61,6 +61,8 @@ public class Column {
 
     private String uppercaseAttributeName;
 
+    private Boolean keyFlag;
+
     /**
      * 参数类型
      */
