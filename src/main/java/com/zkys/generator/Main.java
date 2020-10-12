@@ -16,7 +16,6 @@ import com.zkys.generator.main.MysqlGenerator;
  */
 public class Main {
     public static void main(String[] args) {
-
         MysqlGenerator mysqlGenerator = new MysqlGenerator();
 
         GlobalConfig globalConfig = new GlobalConfig();
@@ -46,7 +45,7 @@ public class Main {
 
         MysqlStrategyConfig strategyConfig = new MysqlStrategyConfig();
         strategyConfig.setSuperEntityClass(BaseModel.class);
-        strategyConfig.setEntityLombokModel(true);
+        strategyConfig.setEntityLombokModel(false);
         strategyConfig.setRestControllerStyle(true);
         strategyConfig.setControllerImpl(true);
         mysqlGenerator.setStrategyConfig(strategyConfig);
