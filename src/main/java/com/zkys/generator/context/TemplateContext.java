@@ -49,8 +49,7 @@ public class TemplateContext {
     }
 
     public TemplateContext buildStrategy(MysqlStrategyConfig config) {
-        map.put("superEntityColumns", config.getSuperEntityColumns());
-        System.out.println(Arrays.toString(config.getSuperEntityColumns()));
+
         map.put("superEntityClass", getSuperEntityClass(config.getSuperEntityClass()));
         map.put("entityLombokModel", config.isEntityLombokModel());
         map.put("restController", config.isRestControllerStyle());
@@ -58,8 +57,11 @@ public class TemplateContext {
         map.put("controllerImpl", config.isControllerImpl());
         map.put("mapper", config.isMapper());
         map.put("baseResultMap", config.isBaseResultMap());
-        Table table = filterColumn((Table) map.get("table"), config.getSuperEntityColumns());
-        map.put("table", table);
+        if (config.getSuperEntityClass() != null) {
+            map.put("superEntityColumns", config.getSuperEntityColumns());
+            Table table = filterColumn((Table) map.get("table"), config.getSuperEntityColumns());
+            map.put("table", table);
+        }
         return this;
     }
 

@@ -63,9 +63,16 @@ public class MysqlGenerator {
      */
     public void execute() {
         try {
-            Class.forName(dataSourceConfig.getDriverName());
-            StaticValue.connection = DriverManager.getConnection(dataSourceConfig.getUrl(),
-                    dataSourceConfig.getUsername(), dataSourceConfig.getPassword());
+            String url = YmlUtil.getString("spring.datasource.url");
+            String username = YmlUtil.getString("spring.datasource.username");
+            String password = YmlUtil.getString("spring.datasource.password");
+            String driverClassName = YmlUtil.getString("spring.datasource.driver-class-name");
+            if (url == null || username == null || password == null || driverClassName == null) {
+                log.error("数据源未配置");
+                return;
+            }
+            Class.forName(driverClassName);
+            StaticValue.connection = DriverManager.getConnection(url, username, password);
             this.connection = StaticValue.connection;
         } catch (Exception e) {
             log.error("加载数据库失败");

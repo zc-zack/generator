@@ -45,7 +45,7 @@ public class Main {
 
         MysqlStrategyConfig strategyConfig = new MysqlStrategyConfig();
         strategyConfig.setSuperEntityClass(BaseModel.class);
-        strategyConfig.setEntityLombokModel(false);
+        strategyConfig.setEntityLombokModel(true);
         strategyConfig.setRestControllerStyle(true);
         strategyConfig.setControllerImpl(true);
         mysqlGenerator.setStrategyConfig(strategyConfig);

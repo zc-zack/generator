@@ -11,11 +11,11 @@
 #end
 #end
 #foreach($column in ${table.commonColumnList})##生成公共字段
-    <result column="${column.attributeName}" property="${column.attributeType}" />
+        <result column="${column.attributeName}" property="${column.attributeType}" />
 #end
 #foreach($column in ${table.columnList})
 #if(!${column.keyFlag})##生成普通字段
-    <result column="${column.attributeName}" property="${column.attributeType}" />
+        <result column="${column.attributeName}" property="${column.attributeType}" />
 #end
 #end
     </resultMap>
